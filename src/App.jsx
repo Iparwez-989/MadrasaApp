@@ -6,7 +6,7 @@ import BottomNav from './components/BottomNav'
 
 const App = () => {
   return (
-    <div className='flex flex-col h-screen justify-between no-scroll'>
+    <div className='flex flex-col h-screen justify-between'>
       <div>
       <Header />
       <Home />
