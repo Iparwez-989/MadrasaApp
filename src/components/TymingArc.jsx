@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { getProgress, parseTime } from "../utilities/utility";
 
-const ARC_RADIUS = 160; // increased for wider arc end-to-end
+const ARC_RADIUS = 150; // increased for wider arc end-to-end
 const STROKE = 14;
 const ORDER = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
@@ -90,7 +90,7 @@ const sweep = (end - start - gap * (total - 1)) / total;
           } else progress = 0;
 
           // approximate arc length in px (r * theta)
-          const sweepAngle = e - s; // degrees
+          const sweepAngle = (e - s); // degrees
           const arcLen = ARC_RADIUS * Math.abs((sweepAngle * Math.PI) / 180);
 
           return (
