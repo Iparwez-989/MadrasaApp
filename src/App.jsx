@@ -3,6 +3,7 @@ import React from 'react'
 import Home from './components/Home'
 import Header from './components/Header'
 import BottomNav from './components/BottomNav'
+import TymingArc from './components/TymingArc'
 
 const App = () => {
   return (

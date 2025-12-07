@@ -2,14 +2,15 @@ import {CloudMoonIcon,CloudSunIcon,MoonStarsIcon,SunDimIcon,SunHorizonIcon} from
 import { useState,useEffect } from 'react';
 import useLocationStore from '../store/useLocationStore';
 import usePrayerStore from '../store/usePrayerStore';
-import { formatTimeDiff, parseTime, to12Hour } from '../utilities/utility';
+import { formatTimeDiff, parseTime, prayerIcons, to12Hour } from '../utilities/utility';
 import { prayerColors } from '../utilities/cardColors';
 import PrayerCard from './PrayerCard';
+import TymingArc from './TymingArc';
 
 
 const NamazCard = () => {
-    const [nextPrayer, setNextPrayer] = useState({ name: "", timeLeft: "" });
-const [bgColor, setBgColor] = useState(prayerColors.Fajr);
+  const [nextPrayer, setNextPrayer] = useState({ name: "", timeLeft: "" });
+  const [bgColor, setBgColor] = useState(prayerColors.Fajr);
 
   const { city, country, fetchLocation } = useLocationStore();
   const { timings, date,  fetchPrayerTimes } = usePrayerStore();
@@ -19,7 +20,13 @@ const [bgColor, setBgColor] = useState(prayerColors.Fajr);
   { name: "Asr", icon: CloudSunIcon, time: timings?.Asr },
   { name: "Maghrib", icon: SunHorizonIcon, time: timings?.Maghrib },
   { name: "Isha", icon: MoonStarsIcon, time: timings?.Isha },
-];
+  ];
+
+  const order = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+  // compute the currently active prayer (previous of the upcoming one)
+  const activePrayer = nextPrayer?.name
+    ? order[(order.indexOf(nextPrayer.name) - 1 + order.length) % order.length]
+    : null;
 
   useEffect(() => {
     fetchLocation();
@@ -57,8 +64,8 @@ const [bgColor, setBgColor] = useState(prayerColors.Fajr);
   }, 1000); // runs every 1 second
 
   return () => clearInterval(interval);
-}, [timings]);
-useEffect(() => {
+  }, [timings]);
+  useEffect(() => {
   const interval = setInterval(() => {
     if (timings) {
       setNextPrayer(getNextPrayer());
@@ -66,23 +73,23 @@ useEffect(() => {
   }, 1000);
 
   return () => clearInterval(interval);
-}, [timings]);
-;
+  }, [timings]);
+  ;
   useEffect(() => {
-  if (nextPrayer?.name) {
-    setBgColor(prayerColors[nextPrayer.name] || "from-violet-800 via-violet-500 to-violet-300");
-  }
-}, [nextPrayer.name]);
+    if (activePrayer) {
+      setBgColor(prayerColors[activePrayer] || "from-violet-800 via-violet-500 to-violet-300");
+    }
+  }, [activePrayer]);
 
-
+  const NextIcon = prayerIcons[nextPrayer.name] || CloudMoonIcon;
 
   return (
-    <div className={`h-80 text-white bg-linear-to-b ${bgColor} rounded-xl mx-3 mt-6 md:w-80`}>
+    <div className={`text-white bg-linear-to-b ${bgColor} rounded-xl mx-3 mt-6 md:w-80`}>
 
       {/* TOP SECTION */}
       <div className='flex justify-between items-center pt-5 px-5'>
         <div className='flex items-center gap-2 font-bold'>
-          <CloudMoonIcon size={28} color='white' />
+          <NextIcon size={28} color='white' />
           <p className='text-2xl'>{nextPrayer.name || "..."}</p>
         </div>
         <div className='border px-3 rounded-full text-md text-center backdrop-blur-lg bg-white/20 '>
@@ -97,16 +104,19 @@ useEffect(() => {
 
       {/* ALL PRAYER TIMES */}
         <div className='flex justify-evenly items-center gap-3 p-3 font-semibold mt-2 text-slate-300'>
-  {prayers.map((p) => (
-    <PrayerCard
-      key={p.name}
-      icon={p.icon}
-      name={p.name}
-      time={to12Hour(p.time)}
-      active={nextPrayer.name === p.name}
-    />
-  ))}
+      {prayers.map((p) => (
+      <PrayerCard
+        key={p.name}
+        icon={p.icon}
+        name={p.name}
+        time={to12Hour(p.time)}
+        active={p.name === activePrayer}
+      />
+        ))}
         </div>
+        <TymingArc
+  timings={timings}
+/>
     </div>
   );
 };
