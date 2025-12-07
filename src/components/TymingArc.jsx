@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { getProgress, parseTime } from "../utilities/utility";
 
-const ARC_RADIUS = 120;
-const STROKE = 16;
+const ARC_RADIUS = 160; // increased for wider arc end-to-end
+const STROKE = 14;
 const ORDER = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
 // convert angle to SVG arc coordinates
@@ -58,14 +58,14 @@ function TymingArc({ timings }) {
     return 0;
   }, [timings, now]);
 
-  // Make arc full width of the card
-const WIDTH = 320; // SVG width (wider to match design)
+  // Make arc full width of the card (end-to-end)
+const WIDTH = 320; // SVG width
 const CENTER_X = WIDTH / 2;
-const CENTER_Y = 200; // move center lower to stretch arc
-const start = -200; // widen left
-const end = 20; // widen right
+const CENTER_Y = 170; // center positioned lower so arc curves upward
+const start = -180; // full semicircle left edge
+const end = 0; // full semicircle right edge
 const total = 5;
-const gap = 14;
+const gap = 10;
 
 // new sweep calculation
 const sweep = (end - start - gap * (total - 1)) / total;
@@ -74,7 +74,7 @@ const sweep = (end - start - gap * (total - 1)) / total;
 
   return (
     <div className="w-full flex justify-center items-center mt-3">
-      <svg width={WIDTH} height={220}>
+      <svg width={WIDTH} height={180} viewBox={`0 0 ${WIDTH} 180`}>
         {Array.from({ length: 5 }).map((_, i) => {
           const s = start + i * (sweep + gap);
           const e = s + sweep;

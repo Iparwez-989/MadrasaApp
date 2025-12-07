@@ -84,7 +84,7 @@ const NamazCard = () => {
   const NextIcon = prayerIcons[nextPrayer.name] || CloudMoonIcon;
 
   return (
-    <div className={`text-white bg-linear-to-b ${bgColor} rounded-xl mx-3 mt-6 md:w-80`}>
+    <div className={` text-white bg-linear-to-b ${bgColor} rounded-xl mx-3 mt-6 md:w-80`}>
 
       {/* TOP SECTION */}
       <div className='flex justify-between items-center pt-5 px-5'>
@@ -114,9 +114,9 @@ const NamazCard = () => {
       />
         ))}
         </div>
-        <TymingArc
-  timings={timings}
-/>
+        <TymingArc timings={timings} />
+        
+        
     </div>
   );
 };
